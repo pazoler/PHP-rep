@@ -7,13 +7,11 @@ if ($request_method === 'POST') {
 	$post=$_POST;
 	$url=$post['url'];
 	var_dump($url);
-	var_dump(isset($url));
 	var_dump(trim($url));
 
 	
 	function is_empty ($url) {
 	if (!isset($url) || !trim($url)) {
-		var_dump($url);
 		return false;
 	}	else return true;
 	}
@@ -31,7 +29,7 @@ if ($request_method === 'POST') {
 
 	}
 
-	var_dump(is_urll($url)); 
+	
 
 	//$data[$key] = $value;	
 }
@@ -50,7 +48,19 @@ function short_url($url) {
 			return $short;
 		}
 
-//2 запись в файл 
+//2 Функция чтения массива:
+function read_array($array, $url) {
+	foreach ($array as $key => $value) {
+		
+		if (trim($key) == trim($url)) {
+			echo "краткая хеш ссылка уже есть: $value <br>";
+			return true;
+		}	
+}
+	return false;
+}
+
+//3 запись в файл 
 // function write_url($url, $short) {
 // 			$array[$url] = $short;
 // 			$in_txt = serialize($array);
@@ -64,14 +74,9 @@ function read_url ($url) {
 	$in_txt = file_get_contents('url.txt');
 	$array = unserialize($in_txt);
 
-	foreach ($array as $key => $value) {
-		var_dump($key, $value);
-		if ($key == $url) {
-			echo "краткая хеш ссылка уже есть: $value <br>";
-			return true;
-		} else {
-			
-			//сокращенная ссылка и проверка на совпадение
+	
+	if (!read_array($array, $url)) {
+		//сокращенная ссылка и проверка на совпадение
 			$short = short_url($url);
 			$check_hash= array_values($array);
 			for ($i=0; $i < count($check_hash); $i++) { 
@@ -85,10 +90,13 @@ function read_url ($url) {
 			echo "ваша краткая хеш ссылка: $short";
 			$in_txt = serialize($array);
 			file_put_contents('url.txt', $in_txt);
-			return true;
-
-		}
+			// return true;
 	}
+	
+			
+
+		
+	
 }
 read_url($url);		
 
